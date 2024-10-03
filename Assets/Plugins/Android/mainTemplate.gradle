@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Add any additional dependencies for your project here
+}
+
+android {
+    namespace "com.unity3d.player" // Keep this for the Unity Player
+    ndkPath "C:/Users/YourUsername/AppData/Local/Android/Sdk/ndk-bundle" // Replace with your actual NDK path
+    compileSdkVersion 33 // Replace with your target SDK version (e.g., 33 for Android 13)
+    buildToolsVersion '33.0.0' // Replace with the appropriate build tools version (33.0.0 for API 33)
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    defaultConfig {
+        minSdkVersion 26 // Set to 26 as required by the Google Cardboard plugin
+        targetSdkVersion 33 // Make sure the target SDK version matches your compile SDK version
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a' // Replace with the ABI filters your project supports
+        }
+        versionCode 1 // Adjust this to your project's version code
+        versionName '1.0' // Adjust this to your project's version name
+        consumerProguardFiles 'proguard-unity.txt' // Keep this for Unity builds
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    aaptOptions {
+        noCompress = ['.unity3d', '.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*.~"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+}
+
+// Add IL2CPP build setup if you’re using IL2CPP for scripting backend
+def enableIl2cpp = true
+if (enableIl2cpp) {
+    // Your IL2CPP-specific build settings go here
+}
+
+// Add external source directories, if any, for Unity build
+sourceSets {
+    main {
+        java.srcDirs += 'src/main/java'
+    }
+}
